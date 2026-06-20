@@ -268,9 +268,17 @@ Response:
 Add screenshots of:
 
 * Home Page
+* <img width="1416" height="773" alt="Screenshot 2026-06-20 at 11 49 57 PM" src="https://github.com/user-attachments/assets/56127a52-1b8a-430c-837c-07724e59edb2" />
+
 * Prediction Form
+* <img width="1439" height="642" alt="Screenshot 2026-06-20 at 11 51 18 PM" src="https://github.com/user-attachments/assets/8a4e114a-0f9a-4f3e-8c6a-c56b05e62d65" />
+
 * Risk Visualization
+* <img width="1439" height="785" alt="Screenshot 2026-06-20 at 11 51 28 PM" src="https://github.com/user-attachments/assets/6956a448-6491-4ab5-a1fe-00a2a1634699" />
+
 * Swagger Documentation
+* <img width="1439" height="777" alt="Screenshot 2026-06-20 at 11 50 15 PM" src="https://github.com/user-attachments/assets/fc4a69f9-c3bc-4d6f-a2ea-b3ca576200d4" />
+
 
 Example:
 
