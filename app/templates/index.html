@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered flood risk prediction system for Indian meteorological subdivisions. Predict flood probability, confidence, and risk level.">
+
+    <title>Flood Risk Prediction System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <!-- Loading Spinner Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <p class="spinner-text">Analyzing flood risk…</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-icon">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="url(#grad)" stroke-width="2.5" fill="none"/>
+                    <path d="M20 10 C20 10, 12 20, 12 25 C12 29.4 15.6 33 20 33 C24.4 33 28 29.4 28 25 C28 20 20 10 20 10Z" fill="url(#grad)" opacity="0.85"/>
+                    <defs>
+                        <linearGradient id="grad" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#38bdf8"/>
+                            <stop offset="100%" stop-color="#6366f1"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h1 class="header-title">Flood Risk Prediction</h1>
+            <p class="header-subtitle">AI-powered analysis for Indian meteorological subdivisions</p>
+        </header>
+
+        <!-- Prediction Form -->
+        <section class="card form-card">
+            <h2 class="card-title">
+                <span class="card-icon">📊</span>
+                Enter Parameters
+            </h2>
+
+            <form id="predictionForm" novalidate>
+                <div class="form-grid">
+
+                    <div class="input-group">
+                        <label for="rainfall">Rainfall (mm)</label>
+                        <input
+                            type="number"
+                            id="rainfall"
+                            name="rainfall"
+                            placeholder="e.g. 250"
+                            min="0.1"
+                            step="0.1"
+                            required>
+                        <span class="input-hint">Amount of rainfall in millimeters</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="month">Month</label>
+                        <select id="month" name="month" required>
+                            <option value="" disabled selected>Select month</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                        <span class="input-hint">Month for prediction</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="year">Year</label>
+                        <input
+                            type="number"
+                            id="year"
+                            name="year"
+                            placeholder="e.g. 2025"
+                            min="1900"
+                            required>
+                        <span class="input-hint">Year for prediction</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="subdivision">Subdivision</label>
+                        <select id="subdivision" name="subdivision" required>
+                            <option value="" disabled selected>Loading…</option>
+                        </select>
+                        <span class="input-hint">Indian meteorological subdivision</span>
+                    </div>
+
+                </div>
+
+                <button type="submit" id="submitBtn" class="submit-btn">
+                    <span class="btn-text">⚡ Predict Flood Risk</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- Results Section (hidden until prediction) -->
+        <section id="resultsSection" class="results-section hidden">
+
+            <!-- Risk Badge -->
+            <div id="riskBadge" class="risk-badge-container">
+                <!-- Filled by JS -->
+            </div>
+
+            <!-- Metrics Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card" id="metricProbability">
+                    <span class="metric-label">Flood Probability</span>
+                    <span class="metric-value" id="valProbability">—</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressProbability"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="metricConfidence">
+                    <span class="metric-label">Confidence</span>
+                    <span class="metric-value" id="valConfidence">—</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill confidence-fill" id="progressConfidence"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="metricUncertainty">
+                    <span class="metric-label">Uncertainty</span>
+                    <span class="metric-value" id="valUncertainty">—</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill uncertainty-fill" id="progressUncertainty"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="metricThreshold">
+                    <span class="metric-label">Rainfall Threshold</span>
+                    <span class="metric-value" id="valThreshold">—</span>
+                    <span class="metric-unit">mm</span>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="card chart-card">
+                    <h3 class="chart-title">Rainfall vs Threshold</h3>
+                    <canvas id="rainfallChart"></canvas>
+                </div>
+
+                <div class="card chart-card">
+                    <h3 class="chart-title">Probability Gauge</h3>
+                    <canvas id="probabilityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Timestamp -->
+            <p class="prediction-timestamp" id="predictionTimestamp"></p>
+
+        </section>
+
+        <!-- Error Display -->
+        <section id="errorSection" class="error-section hidden">
+            <div class="error-card">
+                <span class="error-icon">⚠️</span>
+                <h3>Prediction Failed</h3>
+                <p id="errorMessage">An unexpected error occurred.</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Flood Risk Prediction System &bull; Powered by Machine Learning</p>
+        </footer>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="/static/app.js"></script>
+
+</body>
+
+</html>
